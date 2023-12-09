@@ -1,2 +1,4 @@
 /NetReactStoreBackend/NetStoreAPI/bin/
 /NetReactStoreBackend/NetStoreAPI/obj/
+/net-react-store-frontend/node_modules/
+/net-react-store-frontend/.idea/
