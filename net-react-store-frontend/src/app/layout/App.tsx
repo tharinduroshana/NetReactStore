@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import '../../App.css';
 import {Product} from "../models/products";
+import Catalog from "../../features/catelog/Catalog";
 
 const App = () => {
     const [products, setProducts] = useState<Array<Product>>([]);
@@ -16,10 +17,9 @@ const App = () => {
     }
 
     return (
-        <div>
-            <h1>Test</h1>
-          <div>{products.map((item) => (<div key={item.id}>{item.name}</div>))}</div>
-        </div>
+        <>
+            <Catalog products={products} createProduct={() => console.log("test")} />
+        </>
     );
 }
 
