@@ -1,6 +1,7 @@
 import React from "react";
 import { Product } from "../../app/models/products";
-import { Typography } from "@mui/material";
+import { Button } from "@mui/material";
+import ProductList from "./ProductList";
 
 type CatalogProps = {
   products: Product[];
@@ -8,16 +9,14 @@ type CatalogProps = {
 };
 
 const Catalog = ({ products, createProduct }: CatalogProps) => {
+  console.log(products);
   return (
-    <div>
-      <Typography variant="h1">Test</Typography>
-      <div>
-        {products.map((item: Product) => (
-          <div key={item.id}>{item.name}</div>
-        ))}
-      </div>
-      <button onClick={createProduct}>Test</button>
-    </div>
+    <>
+      <ProductList products={products} />
+      <Button variant="contained" onClick={createProduct}>
+        Test
+      </Button>
+    </>
   );
 };
 
