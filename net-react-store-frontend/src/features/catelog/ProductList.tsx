@@ -1,5 +1,5 @@
 import { Product } from "../../app/models/products";
-import { List } from "@mui/material";
+import { Grid } from "@mui/material";
 import React from "react";
 import ProductCard from "./ProductCard";
 
@@ -10,11 +10,13 @@ type ProductListProps = {
 const ProductList = ({ products }: ProductListProps) => {
   return (
     <>
-      <List>
+      <Grid container spacing={4}>
         {products.map((item: Product) => (
-          <ProductCard product={item} />
+          <Grid item xs={4} key={item.id}>
+            <ProductCard product={item} />
+          </Grid>
         ))}
-      </List>
+      </Grid>
     </>
   );
 };
