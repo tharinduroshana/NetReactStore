@@ -16,13 +16,17 @@ const App = () => {
   const theme = createTheme({
     palette: {
       mode: paletteType,
+      background: { default: paletteType === "light" ? "#eaeaea" : "#121212" },
     },
   });
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Header />
+      <Header
+        darkMode={darkMode}
+        handleThemeChange={() => setDarkMode(!darkMode)}
+      />
       <Container>
         <Catalog />
       </Container>
