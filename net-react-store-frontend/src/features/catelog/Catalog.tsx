@@ -1,21 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Product } from "../../app/models/products";
-import { Button } from "@mui/material";
 import ProductList from "./ProductList";
 
-type CatalogProps = {
-  products: Product[];
-  createProduct: () => void;
-};
+const Catalog = () => {
+  const [products, setProducts] = useState<Array<Product>>([]);
 
-const Catalog = ({ products, createProduct }: CatalogProps) => {
-  console.log(products);
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    const response = await fetch("http://localhost:5198/api/products");
+    const results = await response.json();
+    setProducts(results);
+  };
+
   return (
     <>
       <ProductList products={products} />
-      <Button variant="contained" onClick={createProduct}>
-        Test
-      </Button>
     </>
   );
 };
