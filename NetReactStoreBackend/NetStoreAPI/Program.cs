@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NetStoreAPI.Data;
+using NetStoreAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,8 @@ builder.Services.AddDbContext<StoreContext>(o =>
     o.UseMySQL(builder.Configuration.GetConnectionString("Default")));
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors("AllowClient");
 
