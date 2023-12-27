@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Product } from "../../app/models/products";
 import ProductList from "./ProductList";
+import agent from "../../app/api/agent";
 
 const Catalog = () => {
   const [products, setProducts] = useState<Array<Product>>([]);
@@ -10,9 +11,7 @@ const Catalog = () => {
   }, []);
 
   const fetchProducts = async () => {
-    const response = await fetch("http://localhost:5198/api/products");
-    const results = await response.json();
-    setProducts(results);
+    agent.Catalog.list().then((products) => setProducts(products));
   };
 
   return (
