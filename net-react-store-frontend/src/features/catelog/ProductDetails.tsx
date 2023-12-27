@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Product } from "../../app/models/products";
 import {
   Divider,
@@ -12,6 +11,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import agent from "../../app/api/agent";
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,13 +19,13 @@ const ProductDetails = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5198/api/products/${id}`)
-      .then((response) => setProduct(response.data))
-      .catch((error) => console.error(error))
-      .finally(() => {
-        setIsLoading(false);
-      });
+    id &&
+      agent.Catalog.details(id)
+        .then((response) => setProduct(response))
+        .catch((error) => console.error(error))
+        .finally(() => {
+          setIsLoading(false);
+        });
   }, [id]);
 
   if (isLoading) return <Typography variant="h3">Loading</Typography>;
