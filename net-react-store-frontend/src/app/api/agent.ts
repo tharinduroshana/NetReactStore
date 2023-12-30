@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
+import { routes } from "../router/Routes";
 
 axios.defaults.baseURL = "http://localhost:5198/api";
 
@@ -26,9 +27,12 @@ axios.interceptors.response.use(
         break;
       }
       case 401:
-      case 404:
-      case 500: {
+      case 404: {
         toast.error(data.title);
+        break;
+      }
+      case 500: {
+        routes.navigate("/server-error", { state: { error: data } });
         break;
       }
       default:
