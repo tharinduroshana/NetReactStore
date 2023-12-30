@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import agent from "../../app/api/agent";
+import NotFound from "../../app/errors/NotFound";
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,7 +31,7 @@ const ProductDetails = () => {
 
   if (isLoading) return <Typography variant="h3">Loading</Typography>;
 
-  if (!product) return <Typography variant="h3">Product not found</Typography>;
+  if (!product) return <NotFound />;
 
   return (
     <Grid container spacing={6}>
