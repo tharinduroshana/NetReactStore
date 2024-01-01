@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
+import LoadingComponent from "../../app/layout/LoadingComponent";
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -29,7 +30,7 @@ const ProductDetails = () => {
         });
   }, [id]);
 
-  if (isLoading) return <Typography variant="h3">Loading</Typography>;
+  if (isLoading) return <LoadingComponent message="Loading Product..." />;
 
   if (!product) return <NotFound />;
 
