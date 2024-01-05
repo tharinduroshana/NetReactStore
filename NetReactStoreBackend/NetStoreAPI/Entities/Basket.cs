@@ -20,9 +20,9 @@ public class Basket
         }
     }
 
-    public void RemoveItem(Product product, int quantity)
+    public void RemoveItem(int productId, int quantity)
     {
-        var item = Items.FirstOrDefault(basketItem => basketItem.ProductId == product.Id);
+        var item = Items.FirstOrDefault(basketItem => basketItem.ProductId == productId);
         
         if (item == null) return;
         
