@@ -3,11 +3,12 @@ import { toast } from "react-toastify";
 import { routes } from "../router/Routes";
 
 axios.defaults.baseURL = "http://localhost:5198/api";
+axios.defaults.withCredentials = true;
 
 const responseBody = (response: AxiosResponse) => response?.data;
 
 axios.interceptors.response.use(
-  (response) => {
+  async (response) => {
     return response;
   },
   (error: AxiosError) => {
@@ -57,9 +58,18 @@ const TestError = {
   getValidationError: () => requests.get("buggy/validation-error"),
 };
 
+const Basket = {
+  get: () => requests.get("basket"),
+  addItem: (productId: number, quantity = 1) =>
+    requests.post(`basket?productId=${productId}&quantity=${quantity}`, {}),
+  removeItem: (productId: number, quantity = 1) =>
+    requests.delete(`basket?productId=${productId}&quantity=${quantity}`),
+};
+
 const agent = {
   Catalog,
   TestError,
+  Basket,
 };
 
 export default agent;
