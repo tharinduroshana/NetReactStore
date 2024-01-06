@@ -40,7 +40,10 @@ const navStyles = {
 const Header = ({ darkMode, handleThemeChange }: HeaderProps) => {
   const { basket } = useStoreContext();
   // use javascript reduce to count items in the basket
-  const itemCount = basket?.items.reduce((acc, item) => acc + item.quantity, 0);
+  const itemCount = basket?.items?.reduce(
+    (acc, item) => acc + item.quantity,
+    0,
+  );
 
   return (
     <AppBar position="static" sx={{ mb: 4 }}>
