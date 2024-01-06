@@ -13,6 +13,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import agent from "../../app/api/agent";
 import { LoadingButton } from "@mui/lab";
+import { useStoreContext } from "../../app/context/StoreContext";
 
 type ProductCardType = {
   product: Product;
@@ -20,11 +21,12 @@ type ProductCardType = {
 
 const ProductCard = ({ product }: ProductCardType) => {
   const [loading, setLoading] = useState(false);
+  const { setBasket } = useStoreContext();
 
   const handleAddItem = (productId: number) => {
     setLoading(true);
     agent.Basket.addItem(productId)
-      .then((re) => console.log(re))
+      .then((basket) => setBasket(basket))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   };
