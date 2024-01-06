@@ -9,7 +9,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { ShoppingCart } from "@mui/icons-material";
 
 type HeaderProps = {
@@ -60,7 +60,14 @@ const Header = ({ darkMode, handleThemeChange }: HeaderProps) => {
           ))}
         </List>
         <Box display="flex" alignItems="center">
-          <IconButton size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
+          <IconButton
+            component={Link}
+            size="large"
+            edge="start"
+            color="inherit"
+            to="/basket"
+            sx={{ mr: 2 }}
+          >
             <Badge badgeContent="4" color="secondary">
               <ShoppingCart />
             </Badge>
