@@ -9,14 +9,26 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import agent from "../../app/api/agent";
+import { LoadingButton } from "@mui/lab";
 
 type ProductCardType = {
   product: Product;
 };
 
 const ProductCard = ({ product }: ProductCardType) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleAddItem = (productId: number) => {
+    setLoading(true);
+    agent.Basket.addItem(productId)
+      .then((re) => console.log(re))
+      .catch((error) => console.log(error))
+      .finally(() => setLoading(false));
+  };
+
   return (
     <>
       <Card>
@@ -48,7 +60,13 @@ const ProductCard = ({ product }: ProductCardType) => {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small">Add to cart</Button>
+          <LoadingButton
+            loading={loading}
+            onClick={() => handleAddItem(product.id)}
+            size="small"
+          >
+            Add to cart
+          </LoadingButton>
           <Button component={Link} to={`/catalog/${product.id}`} size="small">
             View
           </Button>
