@@ -23,6 +23,7 @@ const BasketSummary = () => {
     setDeliveryFee(subTotal && subTotal > 10000 ? 0 : 500);
     setSubTotal(subTotal || 0);
   }, [basket]);
+
   return (
     <>
       <TableContainer component={Paper}>
