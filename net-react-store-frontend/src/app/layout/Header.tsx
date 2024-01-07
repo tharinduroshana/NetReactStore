@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { Link, NavLink } from "react-router-dom";
 import { ShoppingCart } from "@mui/icons-material";
-import { useStoreContext } from "../context/StoreContext";
+import { useAppSelector } from "../store/configureStore";
 
 type HeaderProps = {
   darkMode: boolean;
@@ -38,7 +38,7 @@ const navStyles = {
 };
 
 const Header = ({ darkMode, handleThemeChange }: HeaderProps) => {
-  const { basket } = useStoreContext();
+  const { basket } = useAppSelector((state) => state.basket);
   // use javascript reduce to count items in the basket
   const itemCount = basket?.items?.reduce(
     (acc, item) => acc + item.quantity,
