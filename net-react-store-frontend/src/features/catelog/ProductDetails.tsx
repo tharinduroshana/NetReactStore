@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { Product } from "../../app/models/products";
 import {
   Divider,
   Grid,
@@ -12,7 +11,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { LoadingButton } from "@mui/lab";
@@ -21,13 +19,16 @@ import {
   addBasketItemAsync,
   removeBasketItemAsync,
 } from "../basket/basketSlice";
+import { fetchProductAsync, productSelectors } from "./catalogSlice";
 
 const ProductDetails = () => {
   const { basket, status } = useAppSelector((state) => state.basket);
   const dispatch = useAppDispatch();
+  const { status: productStatus } = useAppSelector((state) => state.catalog);
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const product = useAppSelector((state) =>
+    productSelectors.selectById(state, Number(id)),
+  );
   const [quantity, setQuantity] = useState<number>(0);
 
   const item = basket?.items.find((item) => item.productId === Number(id));
@@ -35,14 +36,8 @@ const ProductDetails = () => {
   useEffect(() => {
     if (item) setQuantity(item.quantity);
 
-    id &&
-      agent.Catalog.details(id)
-        .then((response) => setProduct(response))
-        .catch((error) => console.error(error))
-        .finally(() => {
-          setIsLoading(false);
-        });
-  }, [id, item]);
+    if (!product && id) dispatch(fetchProductAsync(Number(id)));
+  }, [id, item, dispatch, product]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (Number(event.target.value) < 0) return;
@@ -71,7 +66,8 @@ const ProductDetails = () => {
     }
   };
 
-  if (isLoading) return <LoadingComponent message="Loading Product..." />;
+  if (productStatus.includes("pending"))
+    return <LoadingComponent message="Loading Product..." />;
 
   if (!product) return <NotFound />;
 
