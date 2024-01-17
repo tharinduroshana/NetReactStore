@@ -6,6 +6,7 @@ import {
   fetchFilters,
   fetchProductsAsync,
   productSelectors,
+  setPageNumber,
   setProductParams,
 } from "./catalogSlice";
 import { Grid, Paper } from "@mui/material";
@@ -91,7 +92,7 @@ const Catalog = () => {
         <AppPagination
           metaData={metaData}
           onPageChange={(page: number) =>
-            dispatch(setProductParams({ pageNumber: page }))
+            dispatch(setPageNumber({ pageNumber: page }))
           }
         />
       </Grid>
