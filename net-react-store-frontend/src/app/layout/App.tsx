@@ -22,7 +22,6 @@ const App = () => {
 
   useEffect(() => {
     const buyerId = getCookie("buyerId");
-    console.log(buyerId);
     if (buyerId) {
       agent.Basket.get()
         .then((basket) => dispatch(setBasket(basket)))

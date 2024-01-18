@@ -25,7 +25,6 @@ const Catalog = () => {
   const products = useAppSelector(productSelectors.selectAll);
   const {
     productsLoaded,
-    status,
     filtersLoaded,
     brands,
     types,
@@ -46,7 +45,7 @@ const Catalog = () => {
     }
   }, [filtersLoaded, dispatch]);
 
-  if (status.includes("pending") || !metaData) {
+  if (!filtersLoaded) {
     return <LoadingComponent message="Loading catalog" />;
   }
 
@@ -89,12 +88,14 @@ const Catalog = () => {
       </Grid>
       <Grid item xs={3} />
       <Grid item xs={9} sx={{ mb: 2, mt: 2 }}>
-        <AppPagination
-          metaData={metaData}
-          onPageChange={(page: number) =>
-            dispatch(setPageNumber({ pageNumber: page }))
-          }
-        />
+        {metaData && (
+          <AppPagination
+            metaData={metaData}
+            onPageChange={(page: number) =>
+              dispatch(setPageNumber({ pageNumber: page }))
+            }
+          />
+        )}
       </Grid>
     </Grid>
   );
