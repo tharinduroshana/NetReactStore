@@ -10,6 +10,8 @@ public class StoreContext : DbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<Basket> Baskets { get; set; }
     public DbSet<BasketItem> BasketItems { get; set; }
+    public DbSet<User> Users { get; set; }
+
     public StoreContext(DbContextOptions<StoreContext> dbContextOptions) : base(dbContextOptions)
     {
         try
@@ -18,7 +20,7 @@ public class StoreContext : DbContext
             if (databaseCreator != null)
             {
                 if (!databaseCreator.CanConnect()) databaseCreator.Create();
-                
+
                 if (!databaseCreator.HasTables()) databaseCreator.CreateTables();
             }
         }
