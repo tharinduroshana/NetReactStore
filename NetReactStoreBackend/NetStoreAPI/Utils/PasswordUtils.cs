@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 
 namespace NetStoreAPI.Utils;
 
-public class PasswordUtils
+public static class PasswordUtils
 {
     private const int SaltSize = 16;
     private const int KeySize = 32;
@@ -10,33 +10,26 @@ public class PasswordUtils
     
     public static (byte[] PasswordHash, byte[] Salt) CreatePasswordHash(string password)
     {
-        using (var algorithm = new Rfc2898DeriveBytes(
-                   password,
-                   SaltSize,
-                   Iterations,
-                   HashAlgorithmName.SHA256))
-        {
-            var key = algorithm.GetBytes(KeySize);
-            var salt = algorithm.Salt;
+        using var algorithm = new Rfc2898DeriveBytes(
+            password,
+            SaltSize,
+            Iterations,
+            HashAlgorithmName.SHA256);
+        var key = algorithm.GetBytes(KeySize);
+        var salt = algorithm.Salt;
 
-            return (key, salt);
-        }
+        return (key, salt);
     }
     
-    public static bool VerifyPassword(string password, string hash, string salt)
+    public static bool VerifyPassword(string password, byte[] hash, byte[] salt)
     {
-        var saltBytes = Convert.FromBase64String(salt);
+        using var algorithm = new Rfc2898DeriveBytes(
+            password,
+            salt,
+            Iterations,
+            HashAlgorithmName.SHA256);
+        var keyToCheck = algorithm.GetBytes(KeySize);
 
-        using (var algorithm = new Rfc2898DeriveBytes(
-                   password,
-                   saltBytes,
-                   Iterations,
-                   HashAlgorithmName.SHA256))
-        {
-            var keyToCheck = algorithm.GetBytes(KeySize);
-            var originalKey = Convert.FromBase64String(hash);
-
-            return keyToCheck.SequenceEqual(originalKey);
-        }
+        return keyToCheck.SequenceEqual(hash);
     }
 }
