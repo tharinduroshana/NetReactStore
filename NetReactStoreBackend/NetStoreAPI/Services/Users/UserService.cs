@@ -43,7 +43,34 @@ public class UserService : IUserService
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return null;
+            return OperationResult<User>.Failure("Internal Server Error.", 500);
+        }
+    }
+
+    public async Task<OperationResult<User>> LoginUser(UserLoginDto request)
+    {
+        try
+        {
+            var existingUser = await _storeContext.Users.FindAsync(request.Username);
+            
+            if (existingUser == null)
+            {
+                return OperationResult<User>.Failure("User not found.", 404);
+            }
+            
+            var isPasswordValid = PasswordUtils.VerifyPassword(request.Password, existingUser.PasswordHash, existingUser.PasswordSalt);
+
+            if (!isPasswordValid)
+            {
+                return OperationResult<User>.Failure("Invalid Credentials.", 401);
+            }
+
+            return OperationResult<User>.SuccessResult(existingUser);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return OperationResult<User>.Failure("Internal Server Error.", 500);
         }
     }
 }
