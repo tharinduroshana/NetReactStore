@@ -7,5 +7,6 @@ namespace NetStoreAPI.Services.Users;
 public interface IUserService
 {
     Task<OperationResult<User>> CreateUser(UserSignUpDto request);
-    Task<OperationResult<User>> LoginUser(UserLoginDto request);
+    Task<OperationResult<UserLoginResponseDto>> LoginUser(UserLoginDto request);
+    UserLoginResponseDto ConvertUserToUserLoginResponseDto(User user);
 }

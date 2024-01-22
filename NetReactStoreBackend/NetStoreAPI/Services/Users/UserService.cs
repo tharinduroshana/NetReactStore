@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using NetStoreAPI.Data;
 using NetStoreAPI.DTOs;
 using NetStoreAPI.Entities;
+using NetStoreAPI.Services.Tokens;
 using NetStoreAPI.Utils;
 
 namespace NetStoreAPI.Services.Users;
@@ -9,10 +10,12 @@ namespace NetStoreAPI.Services.Users;
 public class UserService : IUserService
 {
     private readonly StoreContext _storeContext;
+    private readonly ITokenService _tokenService;
 
-    public UserService(StoreContext storeContext)
+    public UserService(StoreContext storeContext, ITokenService tokenService)
     {
         _storeContext = storeContext;
+        _tokenService = tokenService;
     }
 
     public async Task<OperationResult<User>> CreateUser(UserSignUpDto request)
@@ -47,7 +50,7 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<OperationResult<User>> LoginUser(UserLoginDto request)
+    public async Task<OperationResult<UserLoginResponseDto>> LoginUser(UserLoginDto request)
     {
         try
         {
@@ -55,22 +58,32 @@ public class UserService : IUserService
             
             if (existingUser == null)
             {
-                return OperationResult<User>.Failure("User not found.", 404);
+                return OperationResult<UserLoginResponseDto>.Failure("User not found.", 404);
             }
             
             var isPasswordValid = PasswordUtils.VerifyPassword(request.Password, existingUser.PasswordHash, existingUser.PasswordSalt);
 
             if (!isPasswordValid)
             {
-                return OperationResult<User>.Failure("Invalid Credentials.", 401);
+                return OperationResult<UserLoginResponseDto>.Failure("Invalid Credentials.", 401);
             }
 
-            return OperationResult<User>.SuccessResult(existingUser);
+            return OperationResult<UserLoginResponseDto>.SuccessResult(ConvertUserToUserLoginResponseDto(existingUser));
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return OperationResult<User>.Failure("Internal Server Error.", 500);
+            return OperationResult<UserLoginResponseDto>.Failure("Internal Server Error.", 500);
         }
+    }
+
+    public UserLoginResponseDto ConvertUserToUserLoginResponseDto(User user)
+    {
+        return new UserLoginResponseDto
+        {
+            Username = user.Username,
+            Name = user.Name,
+            Token = _tokenService.GenerateToken(user)
+        };
     }
 }
