@@ -86,4 +86,9 @@ public class UserService : IUserService
             Token = _tokenService.GenerateToken(user)
         };
     }
+
+    public async Task<User> FetchUser(FetchUserDto request)
+    {
+        return await _storeContext.Users.FindAsync(request.Username);
+    }
 }

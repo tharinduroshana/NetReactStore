@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NetStoreAPI.DTOs;
 using NetStoreAPI.Services.Users;
@@ -42,5 +43,13 @@ public class UserController : BaseApiController
         }
 
         return Ok(result.Data);
+    }
+    
+    [Authorize]
+    [HttpPost("fetch-user")]
+    public async Task<UserLoginResponseDto> GetCurrentUser(FetchUserDto request)
+    {
+        var user = await _userService.FetchUser(request);
+        return _userService.ConvertUserToUserLoginResponseDto(user);
     }
 }
