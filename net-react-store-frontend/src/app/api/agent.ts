@@ -2,11 +2,18 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { routes } from "../router/Routes";
 import { PaginatedResponse } from "../models/pagination";
+import { store } from "../store/configureStore";
 
 axios.defaults.baseURL = "http://localhost:5198/api";
 axios.defaults.withCredentials = true;
 
 const responseBody = (response: AxiosResponse) => response?.data;
+
+axios.interceptors.request.use((config: any) => {
+  const token = store.getState().account.user?.token;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
 axios.interceptors.response.use(
   async (response) => {
@@ -36,7 +43,10 @@ axios.interceptors.response.use(
         toast.error(data.title);
         break;
       }
-      case 401:
+      case 401: {
+        toast.error(data.title);
+        break;
+      }
       case 500: {
         routes.navigate("/server-error", { state: { error: data } });
         break;
@@ -80,7 +90,8 @@ const Basket = {
 
 const Account = {
   login: (values: any) => requests.post("/User/login", values),
-  register: (values: any) => requests.post("/User/register", values),
+  register: (values: any) => requests.post("/User/signup", values),
+  fetchUser: (value: any) => requests.post("/User/fetch-user", value),
 };
 
 const agent = {
