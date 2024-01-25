@@ -12,6 +12,7 @@ import {
 import { Link, NavLink } from "react-router-dom";
 import { ShoppingCart } from "@mui/icons-material";
 import { useAppSelector } from "../store/configureStore";
+import SignedInMenu from "./SignedInMenu";
 
 type HeaderProps = {
   darkMode: boolean;
@@ -39,7 +40,7 @@ const navStyles = {
 
 const Header = ({ darkMode, handleThemeChange }: HeaderProps) => {
   const { basket } = useAppSelector((state) => state.basket);
-  // use javascript reduce to count items in the basket
+  const { user } = useAppSelector((state) => state.account);
   const itemCount = basket?.items?.reduce(
     (acc, item) => acc + item.quantity,
     0,
@@ -80,13 +81,22 @@ const Header = ({ darkMode, handleThemeChange }: HeaderProps) => {
               <ShoppingCart />
             </Badge>
           </IconButton>
-          <List sx={{ display: "flex" }}>
-            {rightLinks.map(({ title, path }) => (
-              <ListItem key={path} component={NavLink} to={path} sx={navStyles}>
-                {title.toUpperCase()}
-              </ListItem>
-            ))}
-          </List>
+          {user ? (
+            <SignedInMenu />
+          ) : (
+            <List sx={{ display: "flex" }}>
+              {rightLinks.map(({ title, path }) => (
+                <ListItem
+                  key={path}
+                  component={NavLink}
+                  to={path}
+                  sx={navStyles}
+                >
+                  {title.toUpperCase()}
+                </ListItem>
+              ))}
+            </List>
+          )}
         </Box>
       </Toolbar>
     </AppBar>
