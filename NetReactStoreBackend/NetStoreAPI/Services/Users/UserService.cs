@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using NetStoreAPI.Data;
 using NetStoreAPI.DTOs;
 using NetStoreAPI.Entities;
+using NetStoreAPI.Extensions;
 using NetStoreAPI.Services.Tokens;
 using NetStoreAPI.Utils;
 
@@ -68,7 +69,7 @@ public class UserService : IUserService
                 return OperationResult<UserLoginResponseDto>.Failure("Invalid Credentials.", 401);
             }
 
-            return OperationResult<UserLoginResponseDto>.SuccessResult(ConvertUserToUserLoginResponseDto(existingUser));
+            return OperationResult<UserLoginResponseDto>.SuccessResult(await ConvertUserToUserLoginResponseDto(existingUser));
         }
         catch (Exception e)
         {
@@ -77,13 +78,28 @@ public class UserService : IUserService
         }
     }
 
-    public UserLoginResponseDto ConvertUserToUserLoginResponseDto(User user)
+    public async Task<UserLoginResponseDto> ConvertUserToUserLoginResponseDto(User user)
     {
+        var basket = _storeContext.Baskets
+            .Include(b => b.Items)
+            .ThenInclude(i => i.Product) // Include this if you want to load Product details as well
+            .FirstOrDefault(b => b.BuyerId == user.Username);;
+        if (basket == null)
+        {
+            return new UserLoginResponseDto
+            {
+                Username = user.Username,
+                Name = user.Name,
+                Token = _tokenService.GenerateToken(user)
+            };
+        }
+
         return new UserLoginResponseDto
         {
             Username = user.Username,
             Name = user.Name,
-            Token = _tokenService.GenerateToken(user)
+            Token = _tokenService.GenerateToken(user),
+            Basket = basket.MapBasketToDto()
         };
     }
 
