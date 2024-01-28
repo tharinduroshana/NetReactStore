@@ -81,11 +81,42 @@ const TestError = {
 };
 
 const Basket = {
-  get: () => requests.get("basket"),
-  addItem: (productId: number, quantity = 1) =>
-    requests.post(`basket?productId=${productId}&quantity=${quantity}`, {}),
-  removeItem: (productId: number, quantity = 1) =>
-    requests.delete(`basket?productId=${productId}&quantity=${quantity}`),
+  get: (username: string | null = null) => {
+    if (username !== null) {
+      const params = new URLSearchParams();
+      params.append("username", username);
+      return requests.get("basket", params);
+    } else {
+      return requests.get("basket");
+    }
+  },
+  addItem: (productId: number, quantity = 1) => {
+    const user = localStorage.getItem("user");
+    if (user !== null) {
+      const username = JSON.parse(user).username;
+      return requests.post(
+        `basket?productId=${productId}&quantity=${quantity}&username=${username}`,
+        {},
+      );
+    }
+
+    return requests.post(
+      `basket?productId=${productId}&quantity=${quantity}`,
+      {},
+    );
+  },
+  removeItem: (productId: number, quantity = 1) => {
+    const user = localStorage.getItem("user");
+    if (user !== null) {
+      const username = JSON.parse(user).username;
+      return requests.delete(
+        `basket?productId=${productId}&quantity=${quantity}&username=${username}`,
+      );
+    }
+    return requests.delete(
+      `basket?productId=${productId}&quantity=${quantity}`,
+    );
+  },
 };
 
 const Account = {
