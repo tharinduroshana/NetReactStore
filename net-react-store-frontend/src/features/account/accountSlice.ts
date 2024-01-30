@@ -4,6 +4,7 @@ import { FieldValues } from "react-hook-form";
 import agent from "../../app/api/agent";
 import { routes } from "../../app/router/Routes";
 import { toast } from "react-toastify";
+import { setBasket } from "../basket/basketSlice";
 
 type AccountState = {
   user: User | null;
@@ -17,7 +18,9 @@ export const signInUser = createAsyncThunk<User, FieldValues>(
   "account/signInUser",
   async (data, thunkAPI) => {
     try {
-      const user = await agent.Account.login(data);
+      const userDto = await agent.Account.login(data);
+      const { basket, ...user } = userDto;
+      if (basket) thunkAPI.dispatch(setBasket(basket));
       localStorage.setItem("user", JSON.stringify(user));
       return user;
     } catch (e: any) {
@@ -32,7 +35,9 @@ export const fetchUser = createAsyncThunk<User>(
     thunkAPI.dispatch(setUser(JSON.parse(localStorage.getItem("user")!)));
     try {
       const username = JSON.parse(localStorage.getItem("user")!).username;
-      const user = await agent.Account.fetchUser({ username });
+      const userDto = await agent.Account.fetchUser({ username });
+      const { basket, ...user } = userDto;
+      if (basket) thunkAPI.dispatch(setBasket(basket));
       localStorage.setItem("user", JSON.stringify(user));
       return user;
     } catch (e: any) {
