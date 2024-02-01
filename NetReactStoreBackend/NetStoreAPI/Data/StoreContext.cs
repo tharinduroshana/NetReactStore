@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using NetStoreAPI.Entities;
+using NetStoreAPI.Entities.OrderAggregate;
 
 namespace NetStoreAPI.Data;
 
@@ -9,7 +10,9 @@ public class StoreContext : DbContext
 {
     public DbSet<Product> Products { get; set; }
     public DbSet<Basket> Baskets { get; set; }
+    public DbSet<Order> Orders { get; set; }
     public DbSet<BasketItem> BasketItems { get; set; }
+    public DbSet<UserAddress> UserAddresses { get; set; }
     public DbSet<User> Users { get; set; }
 
     public StoreContext(DbContextOptions<StoreContext> dbContextOptions) : base(dbContextOptions)
@@ -28,5 +31,16 @@ public class StoreContext : DbContext
         {
             Console.Write(e);
         }
+    }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Address)
+            .WithOne()
+            .HasForeignKey<UserAddress>(ua => ua.Id)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
