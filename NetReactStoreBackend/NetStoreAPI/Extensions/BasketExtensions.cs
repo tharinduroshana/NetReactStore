@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using NetStoreAPI.DTOs;
 using NetStoreAPI.Entities;
 
@@ -27,5 +28,12 @@ public static class BasketExtensions
                 Type = item.Product.Type
             }).ToList()
         };
+    }
+
+    public static IQueryable<Basket> RetrieveBasketWIthItems(this IQueryable<Basket> query, string buyerId)
+    {
+        return query.Include(i => i.Items)
+            .ThenInclude(p => p.Product)
+            .Where(b => b.BuyerId == buyerId);
     }
 }
