@@ -10,4 +10,5 @@ public interface IUserService
     Task<OperationResult<UserLoginResponseDto>> LoginUser(UserLoginDto request);
     Task<UserLoginResponseDto> ConvertUserToUserLoginResponseDto(User user);
     Task<User> FetchUser(FetchUserDto request);
+    Task<Address> GetSavedUserAddress(string username);
 }

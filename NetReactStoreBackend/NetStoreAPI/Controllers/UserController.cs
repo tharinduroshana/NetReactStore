@@ -73,6 +73,17 @@ public class UserController : BaseApiController
         return await _userService.ConvertUserToUserLoginResponseDto(user);
     }
 
+    [Authorize]
+    [HttpGet("savedAddress")]
+    public async Task<ActionResult<Address>> GetSavedAddress(string username)
+    {
+        var address = await _userService.GetSavedUserAddress(username);
+        
+        if (address == null) return NotFound("Address not found!");
+        
+        return Ok(address);
+    }
+
     private async Task<Basket> RetrieveBasket(string buyerId = null)
     {
         if (string.IsNullOrEmpty("buyerId"))
