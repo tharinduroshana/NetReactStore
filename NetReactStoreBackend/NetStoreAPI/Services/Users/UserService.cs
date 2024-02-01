@@ -107,4 +107,10 @@ public class UserService : IUserService
     {
         return await _storeContext.Users.FindAsync(request.Username);
     }
+
+    public async Task<Address> GetSavedUserAddress(string username)
+    {
+        var address = await _storeContext.UserAddresses.FindAsync(username);
+        return address;
+    }
 }
