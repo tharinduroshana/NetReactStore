@@ -123,6 +123,35 @@ const Account = {
   login: (values: any) => requests.post("/User/login", values),
   register: (values: any) => requests.post("/User/signup", values),
   fetchUser: (value: any) => requests.post("/User/fetch-user", value),
+  fetchAddress: () => {
+    const user = localStorage.getItem("user");
+    const username = JSON.parse(user!).username;
+    const params = new URLSearchParams();
+    params.append("username", username);
+    return requests.get("/User/savedAddress", params);
+  },
+};
+
+const Orders = {
+  list: () => {
+    const user = localStorage.getItem("user");
+    const username = JSON.parse(user!).username;
+    const params = new URLSearchParams();
+    params.append("username", username);
+    return requests.get("/orders", params);
+  },
+  fetch: (id: string) => {
+    const user = localStorage.getItem("user");
+    const username = JSON.parse(user!).username;
+    const params = new URLSearchParams();
+    params.append("username", username);
+    return requests.get(`/orders/${id}??username=${username}`);
+  },
+  create: (values: any) => {
+    const user = localStorage.getItem("user");
+    const username = JSON.parse(user!).username;
+    return requests.post("/orders", { ...values, username: username });
+  },
 };
 
 const agent = {
@@ -130,6 +159,7 @@ const agent = {
   TestError,
   Basket,
   Account,
+  Orders,
 };
 
 export default agent;
