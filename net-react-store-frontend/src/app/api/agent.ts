@@ -4,7 +4,7 @@ import { routes } from "../router/Routes";
 import { PaginatedResponse } from "../models/pagination";
 import { store } from "../store/configureStore";
 
-axios.defaults.baseURL = "http://localhost:5198/api";
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 axios.defaults.withCredentials = true;
 
 const responseBody = (response: AxiosResponse) => response?.data;
@@ -154,12 +154,21 @@ const Orders = {
   },
 };
 
+const Payments = {
+  createPaymentIntent: () => {
+    const user = localStorage.getItem("user");
+    const username = JSON.parse(user!).username;
+    return requests.post("/payments", { username });
+  },
+};
+
 const agent = {
   Catalog,
   TestError,
   Basket,
   Account,
   Orders,
+  Payments,
 };
 
 export default agent;
