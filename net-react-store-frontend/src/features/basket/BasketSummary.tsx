@@ -10,9 +10,18 @@ import { useEffect, useState } from "react";
 import { currencyFormat } from "../../app/util/util";
 import { useAppSelector } from "../../app/store/configureStore";
 
-const BasketSummary = () => {
+interface BasketSummaryProps {
+  subTotal?: number;
+}
+
+const BasketSummary = ({ subTotal }: BasketSummaryProps) => {
   const { basket } = useAppSelector((state) => state.basket);
-  const [subTotal, setSubTotal] = useState(0);
+  if (subTotal === undefined)
+    subTotal =
+      basket?.items.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0,
+      ) ?? 0;
   const [deliveryFee, setDeliveryFee] = useState(0);
 
   useEffect(() => {
@@ -21,7 +30,6 @@ const BasketSummary = () => {
       0,
     );
     setDeliveryFee(subTotal && subTotal > 10000 ? 0 : 500);
-    setSubTotal(subTotal || 0);
   }, [basket]);
 
   return (
