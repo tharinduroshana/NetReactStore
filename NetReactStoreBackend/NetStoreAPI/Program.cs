@@ -101,6 +101,9 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseCors("AllowClient");
 
 // Configure the HTTP request pipeline.
@@ -110,7 +113,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// app.UseHttpsRedirection();
+app.MapControllers();
+app.MapFallbackToController("Index", "Fallback");
 
 app.UseAuthorization();
 
