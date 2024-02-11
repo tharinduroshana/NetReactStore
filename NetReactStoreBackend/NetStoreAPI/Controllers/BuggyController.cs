@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace NetStoreAPI.Controllers;
@@ -33,6 +34,13 @@ public class BuggyController : BaseApiController
     [HttpGet("server-error")]
     public IActionResult GetServerError()
     {
-        throw new Exception("Exception has occured!");
+        throw new Exception("Server error!");
+    }
+
+    [Authorize]
+    [HttpGet("test-api")]
+    public IActionResult TestAPI()
+    {
+        return Ok();
     }
 }
